@@ -14,6 +14,10 @@ $result = $conn->query($sql);
 // Query untuk mendapatkan laporan dari pengguna
 $sql_reports = "SELECT * FROM reports";
 $reports_result = $conn->query($sql_reports);
+
+// Query untuk mendapatkan daftar pengumuman
+$sql_announcements = "SELECT * FROM announcements ORDER BY created_at DESC";
+$announcements_result = $conn->query($sql_announcements);
 ?>
 
 <!DOCTYPE html>
@@ -55,7 +59,6 @@ $reports_result = $conn->query($sql_reports);
             border-radius: 8px;
         }
 
-        /* Tabel Daftar Pengguna dengan warna biru langit */
         table th, table td {
             padding: 12px;
             text-align: center;
@@ -63,7 +66,7 @@ $reports_result = $conn->query($sql_reports);
         }
 
         table th {
-            background-color: #007BFF; /* Biru langit */
+            background-color: #007BFF;
             color: white;
         }
 
@@ -75,14 +78,25 @@ $reports_result = $conn->query($sql_reports);
             background-color: #f9f9f9;
         }
 
-        /* Tabel laporan pengguna dengan warna yang konsisten dengan tema */
-        .reports-table th {
-            background-color: #007BFF; /* Biru langit */
-            color: white;
+        form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
 
-        .reports-table tr:nth-child(even) {
-            background-color: #f2f2f2;
+        form button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #0056b3;
         }
 
         a {
@@ -143,6 +157,30 @@ $reports_result = $conn->query($sql_reports);
                     <td><?= $report['username'] ?></td>
                     <td><?= $report['report_message'] ?></td>
                     <td><?= $report['created_at'] ?></td>
+                </tr>
+            <?php endwhile; ?>
+        </table>
+
+        <!-- Form untuk Membuat Pengumuman -->
+        <h3>Buat Pengumuman</h3>
+        <form action="create_announcement.php" method="post">
+            <textarea name="announcement" rows="4" placeholder="Tulis pengumuman baru di sini..."></textarea>
+            <button type="submit">Simpan Pengumuman</button>
+        </form>
+
+        <!-- Tabel Daftar Pengumuman -->
+        <h3>Daftar Pengumuman</h3>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Pengumuman</th>
+                <th>Tanggal Dibuat</th>
+            </tr>
+            <?php while ($announcement = $announcements_result->fetch_assoc()): ?>
+                <tr>
+                    <td><?= $announcement['id'] ?></td>
+                    <td><?= htmlspecialchars($announcement['announcement']) ?></td>
+                    <td><?= $announcement['created_at'] ?></td>
                 </tr>
             <?php endwhile; ?>
         </table>
