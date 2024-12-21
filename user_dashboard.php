@@ -8,14 +8,14 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] != 'user') {
 include 'includes/db.php';
 $username = $_SESSION['username'];
 
-// Celah: Tidak melakukan validasi atau sanitasi input
+// Mengambil informasi pengguna
 $sql = "SELECT * FROM users WHERE username = '$username'";
 $result = $conn->query($sql);
 $user = $result->fetch_assoc();
 
 // Menangani laporan
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['report'])) {
-    $report_message = $_POST['report_message'];  // Celah SQL Injection
+    $report_message = mysqli_real_escape_string($conn, $_POST['report_message']);
     $sql_report = "INSERT INTO reports (username, report_message, created_at) VALUES ('$username', '$report_message', NOW())";
     $conn->query($sql_report);
     echo "<script>alert('Report submitted successfully!');</script>";
@@ -26,9 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['message'])) {
     $receiver = mysqli_real_escape_string($conn, $_POST['receiver']);
     $message = mysqli_real_escape_string($conn, $_POST['message']);
     
-    // Menyimpan pesan ke dalam database
     $sql_insert_message = "INSERT INTO messages (sender, receiver, message, created_at) VALUES ('$username', '$receiver', '$message', NOW())";
-    
     if ($conn->query($sql_insert_message) === TRUE) {
         echo "<script>alert('Message sent successfully!');</script>";
     } else {
@@ -50,6 +48,24 @@ $messages_result = $conn->query($sql_messages);
             background-color: #e0f7fa;
             margin: 0;
             padding: 0;
+        }
+
+        .announcement-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .announcement-button:hover {
+            background-color: #0056b3;
         }
 
         .profile-card {
@@ -104,6 +120,7 @@ $messages_result = $conn->query($sql_messages);
             padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
+            z-index: 100;
         }
 
         .report-button:hover {
@@ -120,6 +137,7 @@ $messages_result = $conn->query($sql_messages);
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 99; /* Ensure it's above other elements */
         }
 
         .report-form textarea {
@@ -143,9 +161,8 @@ $messages_result = $conn->query($sql_messages);
             background-color: #0056b3;
         }
 
-        /* Form Styling */
         .message-form input, .message-form textarea {
-            width: 100%; /* Membuat lebar input dan textarea 100% */
+            width: 100%;
             padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
@@ -166,16 +183,24 @@ $messages_result = $conn->query($sql_messages);
         .message-form button:hover {
             background-color: #0056b3;
         }
-
     </style>
     <script>
+        // Fungsi untuk toggle form report
         function toggleReportForm() {
             const reportForm = document.querySelector('.report-form');
-            reportForm.style.display = reportForm.style.display === 'block' ? 'none' : 'block';
+            // Mengubah display form antara 'none' dan 'block'
+            if (reportForm.style.display === 'block') {
+                reportForm.style.display = 'none';
+            } else {
+                reportForm.style.display = 'block';
+            }
         }
     </script>
 </head>
 <body>
+    <!-- Tombol ke halaman Pengumuman -->
+    <a href="announcements.php" class="announcement-button">View Announcements</a>
+
     <!-- Profil Pengguna -->
     <div class="profile-card">
         <h3>Welcome, <?= $user['name'] ?></h3>
