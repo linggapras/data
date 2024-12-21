@@ -41,6 +41,19 @@ Fitur Utama
 4. Logout
    4.1. Menghapus sesi pengguna dan kembali ke halaman login.
 
+5. Pemberitahuan
+   
+   5.1. Pengguna dapat melihat daftar pemberitahuan dengan menekan tombol "Pemberitahuan" di sudut kanan atas dashboard. Pemberitahuan yang ditampilkan mencakup  
+        informasi penting atau pengumuman yang dibuat oleh admin.
+
+   5.2. Admin dapat membuat pemberitahuan baru dengan menekan tombol "Pemberitahuan" di dashboard admin. Tombol ini akan mengarahkan admin ke laman Create 
+        Announcement, di mana admin dapat mengisi judul dan isi pengumuman sebelum menyimpannya.
+
+   ![image](https://github.com/user-attachments/assets/172b9331-db23-4158-a447-0682e75328f4)
+
+   ![image](https://github.com/user-attachments/assets/62a83307-b552-4123-a9df-ef18ca4997bd)
+
+
 Struktur Basis Data
 
 Basis data menggunakan MySQL dengan struktur tabel sebagai berikut:
@@ -56,6 +69,11 @@ Tabel messages
 Tabel Report
 
 ![image](https://github.com/user-attachments/assets/a7a14bde-14f7-4dcd-b02f-1a55f242ae34)
+
+Tabel Pengumuman
+
+![image](https://github.com/user-attachments/assets/0daaa038-1253-426b-8037-e83a7e6eb4ad)
+
 
 Teknologi yang Digunakan
 
